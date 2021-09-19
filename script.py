@@ -52,7 +52,7 @@ def decrypt():
 
         shifted_words[shifted_word] = shift
 
-    with open('./portuguese-words.txt') as file:
+    with open('./src/portuguese-wordlist.txt') as file:
         for portuguese_word in file.readlines():
             portuguese_word = portuguese_word.replace('\n', '').upper()
 
