@@ -3,8 +3,10 @@
 Script to decrypt Caesar's cipher using a brazilian portuguese wordlist.
 
 ## How to use
+
+### Caesar cipher
 ```bash
-$ python script.py /path/to/secret.txt
+$ python caesar_script.py /path/to/secret.txt
 Enter the file to decrypt(full path): /path/to/secret.txt
 0 -> TFDSFUP                                                                                                                                                                                                       
 1 -> SECRETO                                                                                                                                                                                                       
@@ -34,6 +36,14 @@ Enter the file to decrypt(full path): /path/to/secret.txt
 25 -> UGETGVQ                                                                                                                                                                                                      
 Found right shift to decrypt!                                                                                                                                                                                      
 TFDSFUP is SECRETO using the shift 1.
+```
+
+### Vigenère cipher
+```bash
+$ KEY_LENGTH=13 python vinegere_script.py
+The ciphertext to be decrypted: kieiimwiqkeiv
+The key used in the encryption: secretkeysecr
+SECRETMESSAGE
 ```
 
 ## License
