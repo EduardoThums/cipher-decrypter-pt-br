@@ -1,8 +1,8 @@
 import os
 import string
 from collections import deque
+from itertools import product
 
-UPPER_CASE_A_CHARACTER = 65
 KEY_LENGTH = int(os.environ.get('KEY_LENGTH', 3))
 
 
@@ -30,38 +30,57 @@ def validate_inputs():
     if not raw_ciphertext:
         exit_with_error('Missing ciphertext!')
 
-    if not raw_key:
-        exit_with_error('Missing key!')
-
-    if len(raw_ciphertext) != KEY_LENGTH:
-        exit_with_error(f'The ciphertext must have exactly {KEY_LENGTH} characters!')
-
-    if len(raw_key) != KEY_LENGTH:
-        exit_with_error(f'The key must have exactly {KEY_LENGTH} characters!')
-
     if any(char.isdigit() for char in raw_ciphertext):
         exit_with_error('All characters in the ciphertext must be letters!')
 
-    if any(char.isdigit() for char in raw_key):
-        exit_with_error('All characters in the key must be letters!')
+    return raw_ciphertext.upper()
 
-    return raw_ciphertext.upper(), raw_key.upper()
+
+def generate_possible_keys(cipher_length):
+    possible_keys = []
+
+    for first, second, third in product(string.ascii_uppercase, string.ascii_uppercase, string.ascii_uppercase):
+        key = (f'{first}{second}{third}' * (cipher_length // KEY_LENGTH + 1))[:cipher_length]
+
+        possible_keys.append(key)
+
+    return possible_keys
+
+
+def retrieve_plain_from_cipher(key, cipher_length):
+    plain = ''
+
+    for index in range(cipher_length):
+        plain += tabula_recta[f'{key[index]}{ciphertext[index]}']
+
+    return plain
 
 
 def decrypt():
-    pass
+    cipher_length = len(ciphertext)
+    possible_keys = generate_possible_keys(cipher_length)
+    possible_ciphers = {}
+
+    for key in possible_keys:
+        possible_cipher = retrieve_plain_from_cipher(key, cipher_length)
+        possible_ciphers[possible_cipher] = key
+
+    with open('./src/portuguese-wordlist.txt') as file:
+        for word in file.readlines():
+            word = word.replace('\n', '').upper()
+
+            try:
+                right_key = possible_ciphers[word]
+            except KeyError:
+                continue
+            else:
+                print(f'The key to {ciphertext} is {right_key}, which decrypting results into {word}')
 
 
 if __name__ == '__main__':
     raw_ciphertext = input('The ciphertext to be decrypted: ')
-    raw_key = input('The key used in the encryption: ')
 
-    ciphertext, key = validate_inputs()
+    ciphertext = validate_inputs()
     tabula_recta = build_tabula_recta()
-    plaintext = ''
 
-    for index in range(KEY_LENGTH):
-        cipher_to_plain = f'{key[index]}{ciphertext[index]}'
-        plaintext += tabula_recta[cipher_to_plain]
-
-    print(f'Plaintext: {plaintext}')
+    decrypt()
