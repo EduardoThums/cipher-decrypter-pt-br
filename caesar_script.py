@@ -1,16 +1,12 @@
 import os
 
+from helpers import exit_with_error
+
 POSSIBLE_SHIFTS = range(26)
 UPPER_CASE_A_CHARACTER = 65
 
 
-def exit_with_error(message=''):
-    print(message)
-    print('Exiting...')
-    exit(1)
-
-
-def validate_file():
+def validate_file(file_to_decrypt):
     if not file_to_decrypt:
         exit_with_error('Missing file path! Usage: python caesar_brute_force_decrypter.py ./secret.txt')
 
@@ -36,7 +32,7 @@ def validate_file():
         return word.upper()
 
 
-def decrypt():
+def decrypt(word):
     chars = [ord(char) for char in word]
     shifted_words = {}
 
@@ -70,9 +66,12 @@ def decrypt():
         exit_with_error('No word in the possible wordlist was found while shifting!')
 
 
-if __name__ == '__main__':
+def main():
     file_to_decrypt = input('Enter the file to decrypt(full path): ')
 
-    word = validate_file()
-    decrypt()
+    word = validate_file(file_to_decrypt)
+    decrypt(word)
 
+
+if __name__ == '__main__':
+    main()

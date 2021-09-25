@@ -3,16 +3,12 @@ import string
 from collections import deque
 from itertools import product
 
+from helpers import exit_with_error
+
 KEY_LENGTH = int(os.environ.get('KEY_LENGTH', 3))
 
 tabula_recta = {}
 plain_combinations = {}
-
-
-def exit_with_error(message=''):
-    print(message)
-    print('Exiting...')
-    exit(1)
 
 
 def validate_inputs(raw_ciphertext: str):
@@ -94,6 +90,9 @@ def decrypt(cipher):
     with open('./src/vinegere.log', 'w+') as file:
         for plain, key in wrong_combinations:
             file.write(f'{key} -> {plain}\n')
+
+    if wrong_combinations:
+        print('Brute force attempts can be found at: ./src/vinegere.log')
 
 
 def retrieve_plain_from_cipher(cipher, key, cipher_length):
